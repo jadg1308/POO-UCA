@@ -6,6 +6,7 @@
 package registrobd;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -18,7 +19,35 @@ import java.util.logging.Logger;
  * @author jadg13
  */
 public class TablaCiudad extends Conexion{
+    Connection conn;
+    
     final String mostrarCiudad = "Select * from Ciudad";
+    private PreparedStatement insertarRegistro;
+
+    public TablaCiudad() {
+        
+        try {
+            conn= this.obtenerConexion();
+            insertarRegistro = conn.prepareStatement("insert into Ciudad(nombreCiudad, poblacion, extension) values(?, ?, ?)");
+        } catch (SQLException ex) {
+            Logger.getLogger(TablaCiudad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public int registrarCiudad(String nombre, int poblacion, float extension){
+        int result = 0;
+        try {
+            insertarRegistro.setString(1, nombre);
+            insertarRegistro.setInt(2, poblacion);
+            insertarRegistro.setFloat(3, extension);
+            result = insertarRegistro.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(TablaCiudad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
+        return result;
+    }
+    
     
     public void listarCiudad(){
         Connection conn = this.obtenerConexion();
@@ -48,5 +77,6 @@ public class TablaCiudad extends Conexion{
         
     }
     
+   
     
 }
